@@ -1,0 +1,22 @@
+# Keep local/generated files out of source archives, even if accidentally tracked.
+.codex export-ignore
+.agents export-ignore
+.idea export-ignore
+.vscode export-ignore
+.vinext export-ignore
+.wrangler export-ignore
+.next export-ignore
+dist export-ignore
+node_modules export-ignore
+coverage export-ignore
+outputs export-ignore
+work export-ignore
+tmp export-ignore
+artifacts export-ignore
+.env* export-ignore
+*.tsbuildinfo export-ignore
+*.log export-ignore
+*.pem export-ignore
+*.key export-ignore
+*.p12 export-ignore
+*.pfx export-ignore
