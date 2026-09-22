@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
   icons: { icon: "/favicon.svg" },
-  title: "Stacks — Your work, in order",
-  description:
-    "Your GitHub stacks, pull requests, checks, and reviews. A clear path from a stack of changes to a shipped idea.",
+  title: "Stacks — GitHub dashboard",
+  description: "GitHub pull request stacks, check results, and review status.",
 };
 export default function RootLayout({
   children,

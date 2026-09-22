@@ -434,15 +434,6 @@ export default function Home() {
           ))}
         </div>
         <div className="sidebar-bottom">
-          <div className="quiet-note">
-            <GitBranch size={21} />
-            <strong>Small changes. Big picture.</strong>
-            <p>
-              Every layer, from first commit
-              <br />
-              to the finish line.
-            </p>
-          </div>
           <button className="nav-item" onClick={() => setHelp(true)}>
             <Keyboard size={18} />
             <span>Keyboard shortcuts</span>
@@ -495,6 +486,14 @@ export default function Home() {
             </strong>
           </div>
           <div className="topbar-right">
+            <button
+              className="button refresh"
+              disabled={loading}
+              onClick={refresh}
+            >
+              <RefreshCw size={15} className={loading ? "spin" : ""} />
+              {loading ? "Syncing…" : "Sync GitHub"}
+            </button>
             <span>
               <i
                 className={error ? "offline" : "online"}
@@ -522,33 +521,6 @@ export default function Home() {
           </div>
         </header>
         <main>
-          <section className="page-heading">
-            <div>
-              <div className="eyebrow">YOUR GITHUB FLIGHT DECK</div>
-              <h1>
-                {section === "stacks"
-                  ? "Your work, in order."
-                  : section === "saved"
-                    ? "Keep the important close."
-                    : "Room to build on."}
-              </h1>
-              <p>
-                {section === "stacks"
-                  ? "A clear path from a stack of changes to a shipped idea."
-                  : section === "saved"
-                    ? "The stacks and pull requests you’re keeping an eye on."
-                    : "Your open pull requests outside a loaded native stack."}
-              </p>
-            </div>
-            <button
-              className="button refresh"
-              disabled={loading}
-              onClick={refresh}
-            >
-              <RefreshCw size={15} className={loading ? "spin" : ""} />
-              {loading ? "Syncing…" : "Sync GitHub"}
-            </button>
-          </section>
           <section className="stats" aria-label="Stack overview">
             <button className="stat" onClick={() => metric("all")}>
               <span>
@@ -608,11 +580,6 @@ export default function Home() {
                 <strong>{data ? review : "—"}</strong>
                 <small>pull requests in stacks</small>
               </div>
-              <div className="review-track">
-                {Array.from({ length: 8 }, (_, i) => (
-                  <i key={i} />
-                ))}
-              </div>
             </div>
           </section>
           {error && (
@@ -650,13 +617,13 @@ export default function Home() {
           <section className="work-area">
             <div className="section-title">
               <div>
-                <h2>
+                <h1>
                   {section === "stacks"
                     ? "My stacks"
                     : section === "saved"
-                      ? "Saved for later"
+                      ? "Saved"
                       : "Unstacked pull requests"}
-                </h2>
+                </h1>
                 <span>{source.length}</span>
               </div>
               <small>
@@ -665,8 +632,8 @@ export default function Home() {
                   tooltip="Time since the last successful GitHub sync"
                 />
                 {data
-                  ? `Synced ${ago(data.fetchedAt)}`
-                  : "Fetching your workspace"}
+                  ? `Synced ${ago(data.fetchedAt)} · ${auto ? "Auto-sync on" : "Manual sync"}`
+                  : "Loading GitHub data"}
               </small>
             </div>
             <div className="toolbar">
@@ -785,7 +752,7 @@ export default function Home() {
                 {loading && !data && (
                   <div className="empty-state">
                     <LoaderCircle size={30} className="spin" />
-                    <h3>Putting your stacks in order</h3>
+                    <h3>Loading stacks</h3>
                     <p>
                       Gathering pull requests, reviews, and check results from
                       GitHub.
@@ -800,8 +767,8 @@ export default function Home() {
                 {!loading && !data && (
                   <div className="empty-state">
                     <GitBranch size={32} />
-                    <h3>Your workspace is waiting</h3>
-                    <p>Connect GitHub to see your real stacks here.</p>
+                    <h3>GitHub data unavailable</h3>
+                    <p>Connect your GitHub account to load stacks.</p>
                     <button className="button" onClick={refresh}>
                       <RefreshCw size={15} />
                       Try again
@@ -813,10 +780,10 @@ export default function Home() {
                     <Inbox size={34} />
                     <h3>
                       {section === "saved" && !source.length
-                        ? "A little space for your priorities"
+                        ? "No saved items"
                         : filter === "ready"
-                          ? "Nothing ready to land just yet"
-                          : "No stacks in this view"}
+                          ? "No stacks ready to merge"
+                          : "No matching items"}
                     </h3>
                     <p>
                       {section === "saved" && !source.length
@@ -1315,78 +1282,9 @@ export default function Home() {
                     </p>
                   </div>
                 </aside>
-              ) : (
-                data &&
-                visible.length > 0 && (
-                  <aside className="overview-panel">
-                    <div className="overview-mark">
-                      <Layers3 size={29} />
-                    </div>
-                    <span className="eyebrow">THE BIG PICTURE</span>
-                    <h3>
-                      Every change
-                      <br />
-                      has a place.
-                    </h3>
-                    <p>
-                      Select a stack to see its layers,
-                      <br />
-                      review status, and what’s next.
-                    </p>
-                    <div className="overview-diagram">
-                      <div>
-                        <span className="green">
-                          <Check size={14} />
-                        </span>
-                        <p>Checks & reviews</p>
-                        <ShieldCheck size={14} />
-                      </div>
-                      <div>
-                        <span className="blue">
-                          <GitPullRequest size={14} />
-                        </span>
-                        <p>One layer at a time</p>
-                        <GitBranch size={14} />
-                      </div>
-                      <div>
-                        <span className="gray">
-                          <GitMerge size={14} />
-                        </span>
-                        <p>All the way to main</p>
-                        <CheckCheck size={14} />
-                      </div>
-                    </div>
-                    <div className="legend">
-                      {[
-                        ["green", "Ready"],
-                        ["blue", "In progress"],
-                        ["red", "Attention"],
-                        ["purple", "Merged"],
-                      ].map(([c, l]) => (
-                        <span key={c} title={l}>
-                          <i className={c} />
-                          {l}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="shortcut-hint">
-                      <kbd>j</kbd>
-                      <kbd>k</kbd>
-                      <span>to move between stacks</span>
-                    </div>
-                  </aside>
-                )
-              )}
+              ) : null}
             </div>
           </section>
-          <footer className="page-footer">
-            <span>
-              <Layers3 size={13} />A little order for your work in progress.
-            </span>
-            <span>
-              Live GitHub data · {auto ? "Auto-sync on" : "Manual sync"}
-            </span>
-          </footer>
         </main>
       </div>
       {toast && (
@@ -1404,7 +1302,7 @@ export default function Home() {
         className="help-dialog"
       >
         <div>
-          <h2>Find your flow</h2>
+          <h2>Keyboard shortcuts</h2>
           <button
             className="icon-button"
             onClick={() => setHelp(false)}
@@ -1414,7 +1312,6 @@ export default function Home() {
             <X size={18} tooltip="Close the keyboard shortcut guide" />
           </button>
         </div>
-        <p>A few shortcuts to keep you moving.</p>
         {[
           ["/", "Search stacks and pull requests"],
           ["j / k", "Select the next / previous stack"],
